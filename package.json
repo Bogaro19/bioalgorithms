@@ -1,7 +1,7 @@
 {
   "name": "algorithm-taxonomy-tree",
   "version": "1.0.0",
-  "description": "Taxonomía interactiva de Algoritmos de Optimización",
+  "description": "Taxonomía interactiva de Algoritmos de Optimización — IPN / CIC",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
