@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { TopBar } from "./components/SharedUI.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import TreePage from "./pages/TreePage.jsx";
+import AlgorithmPage from "./pages/AlgorithmPage.jsx"; // <-- IMPORTAMOS LA NUEVA PÁGINA
 import GifViewerModal from "./components/GifViewerModal.jsx";
 
 const G = `
@@ -17,9 +18,10 @@ const G = `
 export default function App() {
   const [page, setPage] = useState("home");
   const [activeGifNode, setActiveGifNode] = useState(null); 
+  const [detailNode, setDetailNode] = useState(null); // <-- NUEVO ESTADO PARA LA PÁGINA DEDICADA
+  
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
   
-  // Estados para el Motor de Búsqueda
   const [searchQuery, setSearchQuery] = useState("");
   const [matchCount, setMatchCount] = useState(0);
   const [activeMatchIndex, setActiveMatchIndex] = useState(0);
@@ -29,31 +31,44 @@ export default function App() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // Resetea el índice al escribir algo nuevo
   useEffect(() => { setActiveMatchIndex(0); }, [searchQuery]);
 
   const toggleTheme = () => setTheme(prev => (prev === "dark" ? "light" : "dark"));
-  
   const handleNextMatch = () => { if (matchCount > 0) setActiveMatchIndex(p => (p + 1) % matchCount); };
   const handlePrevMatch = () => { if (matchCount > 0) setActiveMatchIndex(p => (p - 1 + matchCount) % matchCount); };
+
+  // Controlador de navegación principal
+  const handleNav = (p) => {
+    setPage(p);
+    setSearchQuery("");
+    setDetailNode(null); // Si el usuario usa el menú superior, salimos de la vista detallada
+  }
 
   return (
     <>
       <style>{G}</style>
       <TopBar 
-        onNav={(p) => { setPage(p); setSearchQuery(""); }} 
-        cur={page} theme={theme} onToggleTheme={toggleTheme} 
+        onNav={handleNav} 
+        cur={detailNode ? "algorithm" : page} // Para ocultar el buscador si estamos en la vista detallada
+        theme={theme} onToggleTheme={toggleTheme} 
         searchQuery={searchQuery} setSearchQuery={setSearchQuery}
         matchCount={matchCount} activeMatchIndex={activeMatchIndex}
         onNextMatch={handleNextMatch} onPrevMatch={handlePrevMatch}
       />
       
-      <div key={page} style={{ animation: "fadeSlideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)" }}>
-        {page === "home" ? (
+      <div key={detailNode ? "detail" : page} style={{ animation: "fadeSlideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)" }}>
+        {detailNode ? (
+          <AlgorithmPage 
+            node={detailNode} 
+            onBack={() => setDetailNode(null)} 
+            onOpenGif={node => setActiveGifNode(node)} 
+          />
+        ) : page === "home" ? (
           <HomePage onGoTree={() => setPage("tree")} />
         ) : (
           <TreePage 
             onOpenGif={node => setActiveGifNode(node)} 
+            onOpenDetail={node => setDetailNode(node)} // Pasamos la función al árbol
             searchQuery={searchQuery} 
             setMatchCount={setMatchCount}
             activeMatchIndex={activeMatchIndex}

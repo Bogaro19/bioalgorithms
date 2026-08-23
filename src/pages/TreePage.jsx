@@ -2,32 +2,85 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { TREE, getLevelColor } from "../data/taxonomyData.js";
 import { BgGrid, Scanline } from "../components/SharedUI.jsx";
 
-function SidebarInspector({ activeNode, isPinned, onOpenGif }) {
-  // (Mismo código exacto que ya tenías para SidebarInspector en el paso anterior)
+// Sidebar Inspector Fijo a la Derecha (MODO VISTA PREVIA)
+function SidebarInspector({ activeNode, isPinned, onOpenDetail }) {
   return (
-    <aside style={{ width: 480, height: "calc(100vh - 76px)", position: "fixed", top: 76, right: 0, zIndex: 100, background: "var(--bg-surface)", borderLeft: "1px solid var(--border-color)", padding: "40px 36px", boxShadow: "-10px 0 40px rgba(0,0,0,0.06)", display: "flex", flexDirection: "column", overflowY: "auto" }}>
+    <aside style={{
+      width: 480,
+      height: "calc(100vh - 76px)",
+      position: "fixed",
+      top: 76,
+      right: 0,
+      zIndex: 100,
+      background: "var(--bg-surface)",
+      borderLeft: "1px solid var(--border-color)",
+      padding: "40px 36px",
+      boxShadow: "-10px 0 40px rgba(0,0,0,0.06)",
+      display: "flex",
+      flexDirection: "column",
+      overflowY: "auto"
+    }}>
       {activeNode ? (
         <div style={{ animation: "fadeIn 0.25s ease-out", display: "flex", flexDirection: "column", height: "100%" }}>
+          
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <span style={{ width: 12, height: 12, borderRadius: "50%", background: isPinned ? "#e74c3c" : getLevelColor(activeNode.depth || 0), boxShadow: isPinned ? "0 0 12px rgba(231,76,60,0.6)" : "none" }}></span>
-            <span style={{ fontSize: 12, fontWeight: 800, color: isPinned ? "#e74c3c" : getLevelColor(activeNode.depth || 0), letterSpacing: 1.5, textTransform: "uppercase", fontFamily: "Oxanium, monospace" }}>{isPinned ? "NODO FIJADO EN INSPECCIÓN" : "INSPECCIÓN EN TIEMPO REAL"}</span>
+            <span style={{ fontSize: 12, fontWeight: 800, color: isPinned ? "#e74c3c" : getLevelColor(activeNode.depth || 0), letterSpacing: 1.5, textTransform: "uppercase", fontFamily: "Oxanium, monospace" }}>
+              {isPinned ? "NODO FIJADO EN INSPECCIÓN" : "VISTA PREVIA"}
+            </span>
           </div>
-          <h3 style={{ margin: "0 0 20px 0", fontSize: 28, fontWeight: 800, color: "var(--text-primary)", lineHeight: 1.2, letterSpacing: -0.5 }}>{activeNode.label.replace('\n', ' ')}</h3>
+
+          <h3 style={{ margin: "0 0 20px 0", fontSize: 28, fontWeight: 800, color: "var(--text-primary)", lineHeight: 1.2, letterSpacing: -0.5 }}>
+            {activeNode.label.replace('\n', ' ')}
+          </h3>
+
           <div style={{ display: "flex", gap: 12, marginBottom: 28 }}>
-            <div style={{ flex: 1, background: "var(--bg-primary)", border: "1px solid var(--border-color)", borderRadius: 8, padding: "10px 14px" }}><div style={{ fontSize: 10, color: "var(--text-muted)", fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>ESTADO SIMULADOR</div><div style={{ fontSize: 13, color: activeNode.gif ? "#27ae60" : "var(--text-primary)", fontWeight: 600 }}>{activeNode.gif ? "● Animación Lista" : "○ No disponible"}</div></div>
-            <div style={{ flex: 1, background: "var(--bg-primary)", border: "1px solid var(--border-color)", borderRadius: 8, padding: "10px 14px" }}><div style={{ fontSize: 10, color: "var(--text-muted)", fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>NIVEL JERÁRQUICO</div><div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 600 }}>Lvl {activeNode.depth + 1} ({activeNode.children ? "Categoría" : "Hoja"})</div></div>
+            <div style={{ flex: 1, background: "var(--bg-primary)", border: "1px solid var(--border-color)", borderRadius: 8, padding: "10px 14px" }}>
+              <div style={{ fontSize: 10, color: "var(--text-muted)", fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>ESTADO SIMULADOR</div>
+              <div style={{ fontSize: 13, color: activeNode.gif ? "#27ae60" : "var(--text-primary)", fontWeight: 600 }}>
+                {activeNode.gif ? "● Disponible" : "○ No disponible"}
+              </div>
+            </div>
+            <div style={{ flex: 1, background: "var(--bg-primary)", border: "1px solid var(--border-color)", borderRadius: 8, padding: "10px 14px" }}>
+              <div style={{ fontSize: 10, color: "var(--text-muted)", fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>NIVEL JERÁRQUICO</div>
+              <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 600 }}>
+                Lvl {activeNode.depth + 1} ({activeNode.children ? "Categoría" : "Hoja"})
+              </div>
+            </div>
           </div>
-          <div style={{ marginBottom: 32 }}><div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", letterSpacing: 1, marginBottom: 8, fontFamily: "Oxanium, monospace", borderBottom: "1px solid var(--border-color)", paddingBottom: 8 }}>DESCRIPCIÓN TEÓRICA</div><p style={{ margin: 0, fontSize: 15, lineHeight: 1.7, color: "var(--text-primary)" }}>{activeNode.desc}</p></div>
-          {activeNode.useCases && (<div style={{ background: "rgba(39, 174, 96, 0.05)", border: "1px solid rgba(39, 174, 96, 0.3)", borderRadius: 12, padding: "20px", marginBottom: 32 }}><div style={{ color: "#27ae60", fontSize: 11, fontWeight: 800, letterSpacing: 1, marginBottom: 8, fontFamily: "Oxanium, monospace" }}>APLICACIÓN EN LA INDUSTRIA</div><p style={{ margin: 0, fontSize: 14, color: "var(--text-primary)", lineHeight: 1.7 }}>{activeNode.useCases}</p></div>)}
+
+          <div style={{ marginBottom: 32 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", letterSpacing: 1, marginBottom: 8, fontFamily: "Oxanium, monospace", borderBottom: "1px solid var(--border-color)", paddingBottom: 8 }}>
+              RESUMEN TEÓRICO
+            </div>
+            <p style={{ margin: 0, fontSize: 15, lineHeight: 1.7, color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+              {activeNode.desc}
+            </p>
+          </div>
+
           <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: "auto" }}>
-            {activeNode.gif && (<button onClick={() => onOpenGif(activeNode)} style={{ width: "100%", background: "#f39c12", color: "#fff", border: "none", borderRadius: 10, padding: "16px", fontSize: 14, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, transition: "transform 0.2s, box-shadow 0.2s", boxShadow: "0 6px 20px rgba(243, 156, 18, 0.25)" }} onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"} onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>▶ Reproducir Animación de Convergencia</button>)}
-            {activeNode.url && (<button onClick={() => window.open(activeNode.url, "_blank")} style={{ width: "100%", background: "var(--bg-primary)", border: "1px solid var(--border-color)", color: "var(--text-primary)", borderRadius: 10, padding: "16px", fontSize: 14, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, transition: "all 0.2s" }} onMouseEnter={e => { e.currentTarget.style.border = "1px solid var(--text-primary)" }} onMouseLeave={e => { e.currentTarget.style.border = "1px solid var(--border-color)" }}>↗ Consultar Literatura Científica</button>)}
-            {isPinned && (<div style={{ textAlign: "center", fontSize: 12, color: "var(--text-muted)", marginTop: 12 }}>Haz clic en el área cuadriculada para soltar este nodo.</div>)}
+            
+            {/* NUEVO BOTÓN PARA IR A LA VISTA DEDICADA */}
+            <button 
+              onClick={() => onOpenDetail(activeNode)} 
+              style={{ width: "100%", background: "var(--color-category)", color: "#fff", border: "none", borderRadius: 10, padding: "16px", fontSize: 14, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, transition: "transform 0.2s, box-shadow 0.2s", boxShadow: "0 6px 20px rgba(52, 152, 219, 0.25)" }}
+              onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+              onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
+            >
+              ⛶ Abrir Ficha Técnica Completa
+            </button>
+            
+            {isPinned && (
+              <div style={{ textAlign: "center", fontSize: 12, color: "var(--text-muted)", marginTop: 12 }}>
+                Haz clic en el área cuadriculada para soltar este nodo.
+              </div>
+            )}
           </div>
         </div>
       ) : (
+        /* Estado Default: Guía Rápida (Mantenlo igual) */
         <div style={{ animation: "fadeIn 0.25s ease-out", display: "flex", flexDirection: "column", height: "100%" }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: "var(--color-category)", letterSpacing: 1.5, marginBottom: 16, fontFamily: "Oxanium, monospace" }}>PANEL DE CONTROL</div><h3 style={{ margin: "0 0 20px 0", fontSize: 26, fontWeight: 800, color: "var(--text-primary)", letterSpacing: -0.5 }}>Navegación del Árbol</h3><p style={{ fontSize: 15, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 40 }}>Utiliza este panel para revisar a detalle la teoría y las aplicaciones prácticas de las metaheurísticas estudiadas.<br/><br/><strong>Pasa el cursor</strong> para inspección rápida o <strong>Haz clic</strong> en un nodo para fijarlo en pantalla.</p>
+          <div style={{ fontSize: 12, fontWeight: 800, color: "var(--color-category)", letterSpacing: 1.5, marginBottom: 16, fontFamily: "Oxanium, monospace" }}>PANEL DE CONTROL</div><h3 style={{ margin: "0 0 20px 0", fontSize: 26, fontWeight: 800, color: "var(--text-primary)", letterSpacing: -0.5 }}>Vista Previa</h3><p style={{ fontSize: 15, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 40 }}>Utiliza este panel para revisar un resumen preliminar de los algoritmos.<br/><br/><strong>Pasa el cursor</strong> para inspección rápida o <strong>Haz clic</strong> en un nodo para fijarlo en pantalla y acceder a su ficha completa.</p>
           <div style={{ background: "var(--bg-primary)", borderRadius: 12, padding: 24, border: "1px solid var(--border-color)" }}><div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-muted)", letterSpacing: 1, marginBottom: 20, fontFamily: "Oxanium, monospace" }}>CÓDIGO DE COLORES (NIVELES)</div><div style={{ display: "flex", flexDirection: "column", gap: 16 }}><div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 14, color: "var(--text-primary)" }}><span style={{ width: 14, height: 14, borderRadius: "50%", background: "var(--color-root)" }}></span><strong>Nivel 1:</strong> Raíz General</div><div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 14, color: "var(--text-primary)" }}><span style={{ width: 14, height: 14, borderRadius: "50%", background: "var(--color-category)" }}></span><strong>Nivel 2:</strong> Clase</div><div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 14, color: "var(--text-primary)" }}><span style={{ width: 14, height: 14, borderRadius: "50%", background: "var(--color-subcategory)" }}></span><strong>Nivel 3:</strong> Entorno Biológico</div><div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 14, color: "var(--text-primary)" }}><span style={{ width: 14, height: 14, borderRadius: "50%", background: "var(--color-family)" }}></span><strong>Nivel 4:</strong> Subfamilia de Comportamiento</div><div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 14, color: "var(--text-primary)" }}><span style={{ width: 14, height: 14, borderRadius: "50%", background: "var(--color-method)" }}></span><strong>Nivel 5:</strong> Algoritmo Específico</div></div></div>
           <div style={{ marginTop: "auto", borderTop: "1px solid var(--border-color)", paddingTop: 20, fontSize: 12, color: "var(--text-muted)", textAlign: "center" }}>ESCOM · CIC · Instituto Politécnico Nacional</div>
         </div>
@@ -136,7 +189,7 @@ function ConnectorLines({ nodeRefs, expanded, containerRef, isSearching, matched
   );
 }
 
-export default function TreePage({ onOpenGif, searchQuery = "", setMatchCount, activeMatchIndex }) {
+export default function TreePage({ onOpenGif, onOpenDetail, searchQuery = "", setMatchCount, activeMatchIndex }) {
   const [expanded, setExpanded] = useState({});
   const [hoveredNode, setHoveredNode] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null); 
@@ -251,7 +304,7 @@ export default function TreePage({ onOpenGif, searchQuery = "", setMatchCount, a
       </div>
 
       {/* Zona Derecha: Sidebar Inspector Fijo */}
-      <SidebarInspector activeNode={activeNode} isPinned={isPinned} onOpenGif={onOpenGif} />
+      <SidebarInspector activeNode={activeNode} isPinned={isPinned} onOpenDetail={onOpenDetail} onOpenGif={onOpenGif} />
     </div>
   );
 }
