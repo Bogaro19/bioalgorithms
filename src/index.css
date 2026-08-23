@@ -1,2 +1,70 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body, #root { width: 100%; min-height: 100vh; margin: 0; padding: 0; background: #040810; overflow-x: hidden; }
+*, *::before, *::after { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+/* ==========================================
+   PALETA DE COLORES: TEMA OSCURO (Default)
+   ========================================== */
+:root, [data-theme="dark"] {
+  /* Fondos y Superficies (Slate/Navy suave) */
+  --bg-primary: #0f172a;       /* Slate 900: Fondo profundo, no negro puro */
+  --bg-surface: #1e293b;       /* Slate 800: Tarjetas y nodos */
+  --bg-surface-hover: #334155; /* Slate 700 */
+  --border-color: #334155;
+
+  /* Tipografía */
+  --text-primary: #f8fafc;     /* Off-white cálido para lectura sin fatiga */
+  --text-muted: #94a3b8;       /* Gris azulado secundario */
+
+  /* Colores por Nivel de la Taxonomía (Contraste para modo oscuro) */
+  --color-root: #f87171;       /* Rojo pastel brillante */
+  --color-category: #38bdf8;   /* Azul cian brillante */
+  --color-subcategory: #818cf8;/* Índigo suave */
+  --color-family: #c084fc;     /* Morado lavanda */
+  --color-method: #fbbf24;     /* Ámbar / Dorado cálido */
+
+  /* Sombras */
+  --shadow-node: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================
+   PALETA DE COLORES: TEMA CLARO
+   ========================================== */
+[data-theme="light"] {
+  /* Fondos y Superficies (Gris/Crema suave) */
+  --bg-primary: #f1f5f9;       /* Slate 100: Fondo claro mate, no blanco puro */
+  --bg-surface: #ffffff;       /* Blanco en contenedores para dar relieve */
+  --bg-surface-hover: #e2e8f0; /* Slate 200 */
+  --border-color: #cbd5e1;
+
+  /* Tipografía */
+  --text-primary: #0f172a;     /* Slate 900: Texto oscuro legible */
+  --text-muted: #64748b;       /* Slate 500 */
+
+  /* Colores por Nivel de la Taxonomía (Tonos con más peso/saturación) */
+  --color-root: #dc2626;       /* Rojo intenso */
+  --color-category: #0284c7;   /* Azul corporativo */
+  --color-subcategory: #4f46e5;/* Índigo */
+  --color-family: #7e22ce;     /* Morado */
+  --color-method: #d97706;     /* Ámbar oscuro */
+
+  /* Sombras */
+  --shadow-node: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+/* ==========================================
+   ESTILOS GENERALES
+   ========================================== */
+html, body, #root { 
+  width: 100%; 
+  min-height: 100vh; 
+  margin: 0; 
+  padding: 0; 
+  background-color: var(--bg-primary); 
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden; 
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave de tema */
+}
